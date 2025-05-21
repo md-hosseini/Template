@@ -24,6 +24,16 @@ namespace Template.Common
                     Audience = _configuration["Jwt:Audience"],
                     ExpiryInMinutes = int.Parse(_configuration["Jwt:ExpiryInMinutes"])
                 },
+                OTPSettings = new OTPSettings
+                {
+                    Domain = _configuration["OTP:Domain"],
+                    From = _configuration["OTP:From"],
+                    Password = _configuration["OTP:Password"],
+                    Username = _configuration["OTP:Username"],
+                    Url = _configuration["OTP:Url"],
+                    ApiPassword = _configuration["OTP:ApiPassword"],
+                    ApiUsername = _configuration["OTP:ApiUsername"]
+                },
             };
         }
     }
@@ -32,6 +42,7 @@ namespace Template.Common
     {
         public string SqlConnection { get; set; }
         public JwtSettings JwtSettings { get; set; }
+        public OTPSettings OTPSettings { get; set; }
     }
     public class JwtSettings
     {
@@ -39,5 +50,15 @@ namespace Template.Common
         public string Issuer { get; set; }
         public string Audience { get; set; }
         public int ExpiryInMinutes { get; set; }
+    }
+    public class OTPSettings
+    {
+        public string Url { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Domain { get; set; }
+        public string From { get; set; }
+        public string ApiUsername { get; set; }
+        public string ApiPassword { get; set; }
     }
 }

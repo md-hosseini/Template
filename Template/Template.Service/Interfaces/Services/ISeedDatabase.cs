@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Template.Shared.Middlewares
+namespace Template.Service.Interfaces.Services
 {
-    internal class Class1
+    public interface ISeedDatabase
     {
+        Task Seed();
     }
 }

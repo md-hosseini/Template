@@ -8,21 +8,18 @@ using Template.Common;
 using Template.Service;
 using Template.Domain;
 using Microsoft.EntityFrameworkCore;
+using Template.Shared.Middlewares;
+using Template.Service.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 AppSettingFactory.Initialize(builder.Configuration);
 var appSettings = AppSettingFactory.AppSetting;
 var configuration = builder.Configuration;
-// Add services to the container.
 
-
-builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-
 builder.Services.AddApplicationLayerServices()
                 .AddServiceLayerServices()
                 .AddDomainLayerServices(configuration);
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -94,23 +91,24 @@ app.UseSwaggerUI(options =>
 });
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors("Cors");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-//await using (var scope = app.Services.CreateAsyncScope())
-//{
-//    var context = scope.ServiceProvider.GetService<ApplicationDBContext>();
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var context = scope.ServiceProvider.GetService<ApplicationDBContext>();
 
-//    if (context is null)
-//        throw new Exception("Database Context Not Found");
+    if (context is null)
+        throw new Exception("Database Context Not Found");
 
-//    await context.Database.MigrateAsync();
+    await context.Database.MigrateAsync();
 
-//    var seedService = scope.ServiceProvider.GetRequiredService<ISeedDatabase>();
-//    await seedService.Seed();
-//}
+    var seedService = scope.ServiceProvider.GetRequiredService<ISeedDatabase>();
+    await seedService.Seed();
+}
 
 app.Run();
